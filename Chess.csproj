@@ -46,11 +46,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
-      <HintPath>packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
     <Compile Include="Figures\Bishop.cs" />
     <Compile Include="Figures\Castle.cs" />
     <Compile Include="Field.cs" />
@@ -72,6 +70,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
+    <Compile Include="Server.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,7 +87,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -103,7 +101,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="License-LGPL.txt" />
     <None Include="Resources\Chess_symbols_set_ %282%29.png" />
     <None Include="Resources\Chess_symbols_set_ %283%29.png" />
     <None Include="Resources\Chess_symbols_set_ %284%29.png" />
@@ -116,6 +113,12 @@
     <None Include="Resources\Chess_symbols_set_ %2811%29.png" />
     <None Include="Resources\Chess_symbols_set_ %281%29.png" />
     <None Include="Resources\Chess_symbols_set_.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChessLib\ChessLib.csproj">
+      <Project>{5de480cf-d737-4221-ac02-b597d1b47009}</Project>
+      <Name>ChessLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

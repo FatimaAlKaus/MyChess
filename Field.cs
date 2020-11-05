@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Windows.Forms.VisualStyles;
+using ChessLib;
 namespace Library
 {
     public class Field
     {
         Figure selectedFigure;
+        public event Action Refresh;
+        public ChessEventHandler ChessEventHandler { get; set; }
         public int CellSize { get; private set; } = 50;
         private List<Figure> figures = new List<Figure>();
         int _x;
@@ -28,10 +31,21 @@ namespace Library
             MessageBox.Show($"Победил {message} игрок!");
             Reset();
         }
+        public void Move(object sender, ChessEventArgs e)
+        {
+            GetFigure(new Point(e.OldX, e.OldY))?.Move(e.NewX, e.NewY, this);
+            Refresh?.Invoke();
+        }
         public Field()
         {
             Reset();
-
+        }
+        public void GlobalSubscribe()
+        {
+            foreach (var figure in figures)
+            {
+                figure.TurnNotify += ChessEventHandler;
+            }
         }
         public void Reset()
         {
@@ -57,6 +71,8 @@ namespace Library
             figures.Add(new Knight(6, 7, Color.White));
             for (int i = 0; i < 8; i++)
                 figures.Add(new Pawn(i, 6, Color.White, RebornPawn));
+
+            GlobalSubscribe();
         }
         public Figure GetFigure(Point point)
         {
