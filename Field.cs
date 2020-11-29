@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,8 +12,15 @@ namespace Library
 {
     public class Field
     {
+        public Color currentColor { get; private set; } = Color.White;
+        private void CurrentColorChange()
+        {
+            currentColor = currentColor == Color.White ? Color.Black : Color.White;
+        }
+
         Figure selectedFigure;
         public event Action Refresh;
+        public event Action TurnNotify;
         public ChessEventHandler ChessEventHandler { get; set; }
         public int CellSize { get; private set; } = 50;
         private List<Figure> figures = new List<Figure>();
@@ -23,6 +31,7 @@ namespace Library
         public bool Inside(Point point)
         {
             return !(point.X < 0 || point.Y < 0 || point.X > 7 || point.Y > 7);
+
         }
         private void VictoryNotify(object sender, EventArgs e)
         {
@@ -34,10 +43,12 @@ namespace Library
         public void Move(object sender, ChessEventArgs e)
         {
             GetFigure(new Point(e.OldX, e.OldY))?.Move(e.NewX, e.NewY, this);
+            TurnNotify?.Invoke();
             Refresh?.Invoke();
         }
         public Field()
         {
+            TurnNotify += CurrentColorChange;
             Reset();
         }
         public void GlobalSubscribe()
@@ -73,6 +84,7 @@ namespace Library
                 figures.Add(new Pawn(i, 6, Color.White, RebornPawn));
 
             GlobalSubscribe();
+            currentColor = Color.White;
         }
         public Figure GetFigure(Point point)
         {
@@ -103,19 +115,40 @@ namespace Library
         }
         public void Put()
         {
+
             if (selectedFigure != null)
             {
+
                 Point point = new Point(X / CellSize, Y / CellSize);
 
                 if (selectedFigure.GetPoints(this).Contains(point))
                 {
                     selectedFigure.Move(point.X, point.Y, this);
+                    //TurnNotify?.Invoke();
                 }
+
             }
+
         }
-        public void Select()
+        public void Select(Color color)
         {
             selectedFigure = selectedFigure == null ? GetFigure() : null;
+
+            if (selectedFigure != null)
+            {
+                if (currentColor == color)
+                {
+                    if (selectedFigure.Color != currentColor)
+                    {
+                        selectedFigure = null;
+                    }
+                }
+                else
+                {
+                    selectedFigure = null;
+                }
+            }
+
         }
         private void RebornPawn(object sender, EventArgs e)
         {
@@ -149,8 +182,7 @@ namespace Library
             //Прорисовка выделенной области
             if (X / CellSize < 8 && Y / CellSize < 8) g.DrawRectangle(pen, X, Y, CellSize, CellSize);
 
-            //Прорисовка всех позиций фигуры
-            //Figure f = GetFigure(new Point(_x / CellSize, _y / CellSize));
+            //Прорисовка всех позиций фигуры      
             if (selectedFigure != null)
             {
                 var points = selectedFigure.GetPoints(this);

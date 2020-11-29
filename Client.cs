@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,16 +19,12 @@ namespace Library
         public event Action Connected;
         TcpClient tcpClient;
         NetworkStream stream;
-        public Client()
-        {
-          
-        }
         async public void Connect()
         {
             try
-            { 
+            {
                 tcpClient = new TcpClient();
-                tcpClient.Connect(IPAddress.Parse("127.0.0.1"), 8888);                
+                tcpClient.Connect(IPAddress.Parse("127.0.0.1"), 8888);
                 stream = tcpClient.GetStream();
                 Connected?.Invoke();
                 MessageBox.Show("Подключились к серверу!");

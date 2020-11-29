@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using ChessLib;
+using System.Drawing;
+
 namespace Library
 {
     public class Server
@@ -37,7 +39,7 @@ namespace Library
             tcpListener = new TcpListener(IPAddress.Any, 8888);
         }
         async public void Listen()
-        {          
+        {
             tcpListener.Start();
             tcpClient = await tcpListener.AcceptTcpClientAsync();
             stream = tcpClient.GetStream();
@@ -46,7 +48,7 @@ namespace Library
 
             await Task.Run(() =>
             {
-                while (stream!=null)
+                while (stream != null)
                 {
                     try
                     {

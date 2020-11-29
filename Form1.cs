@@ -19,14 +19,17 @@ namespace Library
         Server server;
         Client client;
         Field field;
+        Color MyColor;
         public Form1()
         {
+           
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
             UpdateStyles();
             server = new Server();
             field = new Field();
             client = new Client();
+           
 
 
 
@@ -46,7 +49,7 @@ namespace Library
             field.X = e.X;
             field.Y = e.Y;
             field.Put();
-            field.Select();
+            field.Select(MyColor);
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
@@ -64,6 +67,7 @@ namespace Library
 
         private void button2_Click(object sender, EventArgs e)
         {
+            MyColor = Color.Black;
             field.ChessEventHandler = server.Write;
             server.Listen();
 
@@ -71,6 +75,7 @@ namespace Library
 
         private void button3_Click(object sender, EventArgs e)
         {
+            MyColor = Color.White;
             field.ChessEventHandler = client.Write;
             client.Connect();
         }
